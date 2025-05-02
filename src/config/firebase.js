@@ -7,13 +7,16 @@ import { getStorage } from "firebase/storage";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "ecofarmcast.firebaseapp.com",
-  projectId: "ecofarmcast",
-  storageBucket: "ecofarmcast.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "YOUR_MEASUREMENT_ID"
+  // Using environment variables for secure configuration
+  // In production, these would be set in your hosting environment
+  // For local development, you can use a .env file
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "ecofarmcast.firebaseapp.com",
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "ecofarmcast",
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "ecofarmcast.appspot.com",
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "123456789012",
+  appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:123456789012:web:abcdef1234567890",
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || "G-ABCDEFGHIJ"
 };
 
 // Initialize Firebase
