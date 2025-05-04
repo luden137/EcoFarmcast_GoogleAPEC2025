@@ -1,73 +1,105 @@
-# EcoFarmcast_GoogleAPEC2025
+ # EcoFarmCast
 
-# Getting Started with Create React App
+A React Native mobile application for sustainable farming management and analysis.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+EcoFarmCast is a mobile application that helps farmers implement sustainable agricultural practices, track farm data, and receive AI-powered recommendations. The app provides tools for data collection, analysis, and sustainability tracking.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **User Authentication**: Secure login and registration system
+- **Farm Data Management**: Record and manage soil conditions, crop details, and equipment usage
+- **AI-Powered Analysis**: Get insights and recommendations based on your farm data
+- **Sustainability Tracking**: Monitor environmental impact and explore carbon credit opportunities
+- **Offline Support**: Access and update your data even without an internet connection
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Prerequisites
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Node.js (v16 or newer)
+- npm or yarn
+- React Native CLI
+- Android Studio (for Android development)
+- Xcode (for iOS development, macOS only)
+- Firebase project with Authentication, Firestore, and Storage enabled
 
-### `npm test`
+## Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/ecofarmcast.git
+   cd ecofarmcast
+   ```
 
-### `npm run build`
+2. Install dependencies:
+   ```
+   npm install
+   # or
+   yarn install
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. Configure Firebase:
+   - Create a Firebase project at https://console.firebase.google.com/
+   - Enable Authentication, Firestore, and Storage services
+   - Update the Firebase configuration in `src/config/firebase.js` with your project credentials
+   - Create a `.env` file in the root directory with your Firebase and API keys:
+     ```
+     REACT_APP_FIREBASE_API_KEY=your-api-key
+     REACT_APP_FIREBASE_AUTH_DOMAIN=your-auth-domain
+     REACT_APP_FIREBASE_PROJECT_ID=your-project-id
+     REACT_APP_FIREBASE_STORAGE_BUCKET=your-storage-bucket
+     REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
+     REACT_APP_FIREBASE_APP_ID=your-app-id
+     REACT_APP_FIREBASE_MEASUREMENT_ID=your-measurement-id
+     REACT_APP_GEMINI_API_KEY=your-gemini-api-key
+     ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+4. Run the app:
+   
+   For Android:
+   ```
+   npm run android
+   # or
+   yarn android
+   ```
+   
+   For iOS (macOS only):
+   ```
+   npm run ios
+   # or
+   yarn ios
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Project Structure
 
-### `npm run eject`
+```
+src/
+- assets/         # Images, fonts, and other static assets
+- components/     # Reusable UI components
+- config/         # Configuration files (Firebase, theme, etc.)
+- context/        # React Context providers
+- hooks/          # Custom React hooks
+- navigation/     # Navigation configuration
+- screens/        # App screens
+- services/       # API and service integrations
+- utils/          # Utility functions and helpers
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## AI Integration
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+The app integrates with Google's Gemini AI to provide:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. **Crop Recommendations**: Based on soil type, climate, and farm goals
+2. **Carbon Credit Analysis**: Calculate potential carbon credits from sustainable practices
+3. **Energy Optimization**: Recommendations for reducing energy usage and costs
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Development Notes
 
-## Learn More
+- The app uses React Native Paper for UI components
+- Firebase is used for authentication, database, and storage
+- The app supports both iOS and Android platforms
+- Offline support is implemented using Firestore persistence
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## License
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-
+[MIT License](LICENSE)
