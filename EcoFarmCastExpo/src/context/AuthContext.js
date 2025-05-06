@@ -1,6 +1,16 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { auth } from '../config/firebase';
 import { Alert } from 'react-native';
+import { 
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+  updateProfile,
+  updateEmail,
+  onAuthStateChanged
+} from 'firebase/auth';
+import { auth } from '../config/firebase';
+import { USE_DEV_MODE, MOCK_USER } from '../config/devConfig';
 
 // Create the Auth Context
 export const AuthContext = createContext();
@@ -11,29 +21,52 @@ export const AuthProvider = ({ children }) => {
 
   // Listen for auth state changes
   useEffect(() => {
-    const unsubscribe = auth().onAuthStateChanged((user) => {
-      setCurrentUser(user);
+    if (USE_DEV_MODE) {
+      // In development mode, use the mock user
+      console.log('[DEV MODE] Development mode active - using mock user');
+      setCurrentUser(MOCK_USER);
       setLoading(false);
-    });
+      return () => {}; // No cleanup needed for mock user
+    } else {
+      // In production mode, use real Firebase authentication
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        setCurrentUser(user);
+        setLoading(false);
+      });
 
-    // Cleanup subscription
-    return unsubscribe;
+      // Cleanup subscription
+      return unsubscribe;
+    }
   }, []);
 
   // Sign up with email and password
   const signup = async (email, password, displayName) => {
     try {
       setLoading(true);
-      const userCredential = await auth().createUserWithEmailAndPassword(email, password);
+      
+      if (USE_DEV_MODE) {
+        // In development mode, simulate successful signup with mock user
+        console.log('[DEV MODE] Development mode - simulating signup');
+        // Create a custom mock user with the provided display name
+        const customMockUser = {
+          ...MOCK_USER,
+          displayName: displayName || MOCK_USER.displayName,
+          email: email || MOCK_USER.email
+        };
+        setCurrentUser(customMockUser);
+        return customMockUser;
+      }
+      
+      // Real signup in production mode
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       
       // Update user profile with display name
-      await userCredential.user.updateProfile({
+      await updateProfile(userCredential.user, {
         displayName: displayName
       });
       
-      // Refresh the user to get updated profile
-      await userCredential.user.reload();
-      setCurrentUser(auth().currentUser);
+      // The user object should automatically update
+      setCurrentUser(auth.currentUser);
       
       return userCredential.user;
     } catch (error) {
@@ -48,7 +81,16 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setLoading(true);
-      const userCredential = await auth().signInWithEmailAndPassword(email, password);
+      
+      if (USE_DEV_MODE) {
+        // In development mode, simulate successful login with mock user
+        console.log('[DEV MODE] Development mode - simulating login');
+        setCurrentUser(MOCK_USER);
+        return MOCK_USER;
+      }
+      
+      // Real authentication in production mode
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       return userCredential.user;
     } catch (error) {
       console.error('Login error:', error);
@@ -62,7 +104,16 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       setLoading(true);
-      await auth().signOut();
+      
+      if (USE_DEV_MODE) {
+        // In development mode, simulate logout
+        console.log('[DEV MODE] Development mode - simulating logout');
+        setCurrentUser(null);
+        return;
+      }
+      
+      // Real logout in production mode
+      await signOut(auth);
     } catch (error) {
       console.error('Logout error:', error);
       throw error;
@@ -74,7 +125,18 @@ export const AuthProvider = ({ children }) => {
   // Reset password
   const resetPassword = async (email) => {
     try {
-      await auth().sendPasswordResetEmail(email);
+      if (USE_DEV_MODE) {
+        // In development mode, simulate password reset
+        console.log('[DEV MODE] Development mode - simulating password reset');
+        Alert.alert(
+          'Password Reset Email Sent (DEV MODE)',
+          'This is a simulated password reset in development mode.'
+        );
+        return;
+      }
+      
+      // Real password reset in production mode
+      await sendPasswordResetEmail(auth, email);
       Alert.alert(
         'Password Reset Email Sent',
         'Check your email for instructions to reset your password.'
@@ -86,26 +148,42 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Update profile
-  const updateProfile = async (updates) => {
+  const updateUserProfile = async (updates) => {
     try {
       setLoading(true);
-      const user = auth().currentUser;
+      
+      if (USE_DEV_MODE) {
+        // In development mode, simulate profile update
+        console.log('[DEV MODE] Development mode - simulating profile update');
+        
+        // Update the mock user with the new values
+        const updatedUser = {
+          ...MOCK_USER,
+          ...(updates.displayName && { displayName: updates.displayName }),
+          ...(updates.email && { email: updates.email })
+        };
+        
+        setCurrentUser(updatedUser);
+        return updatedUser;
+      }
+      
+      // Real profile update in production mode
+      const user = auth.currentUser;
       
       if (updates.displayName) {
-        await user.updateProfile({
+        await updateProfile(user, {
           displayName: updates.displayName
         });
       }
       
       if (updates.email) {
-        await user.updateEmail(updates.email);
+        await updateEmail(user, updates.email);
       }
       
-      // Refresh the user to get updated profile
-      await user.reload();
-      setCurrentUser(auth().currentUser);
+      // The user object should automatically update
+      setCurrentUser(auth.currentUser);
       
-      return auth().currentUser;
+      return auth.currentUser;
     } catch (error) {
       console.error('Update profile error:', error);
       throw error;
@@ -121,7 +199,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     resetPassword,
-    updateProfile
+    updateProfile: updateUserProfile
   };
 
   return (

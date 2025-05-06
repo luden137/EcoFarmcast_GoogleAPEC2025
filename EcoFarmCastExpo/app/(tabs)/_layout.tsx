@@ -1,15 +1,34 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
+import { useTheme } from 'react-native-paper';
+import { Ionicons } from '@expo/vector-icons';
 
 import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import useAuth from '@/src/hooks/useAuth';
+import { router } from 'expo-router';
+import { USE_DEV_MODE } from '@/src/config/devConfig';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const theme = useTheme();
+  const { currentUser } = useAuth();
+
+  // If user is not logged in, redirect to login (except in development mode)
+  React.useEffect(() => {
+    if (!currentUser && !USE_DEV_MODE) {
+      // Use the correct path format for Expo Router
+      router.replace('/(auth)/login');
+    }
+  }, [currentUser]);
+
+  // If no user and not in development mode, don't render tabs yet
+  if (!currentUser && !USE_DEV_MODE) {
+    return null;
+  }
 
   return (
     <Tabs
@@ -30,14 +49,28 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color, size }) => <Ionicons name="home" color={color} size={size} />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="data-entry"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Data Entry',
+          tabBarIcon: ({ color, size }) => <Ionicons name="clipboard" color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
+        name="analysis"
+        options={{
+          title: 'Analysis',
+          tabBarIcon: ({ color, size }) => <Ionicons name="bar-chart" color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
         }}
       />
     </Tabs>

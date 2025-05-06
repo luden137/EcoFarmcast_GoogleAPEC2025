@@ -1,8 +1,8 @@
 import { Platform } from 'react-native';
-import firebase from '@react-native-firebase/app';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -15,21 +15,19 @@ const firebaseConfig = {
   measurementId: "G-ABCDEFGHIJ"
 };
 
-// Initialize Firebase if it hasn't been initialized yet
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const firestore = getFirestore(app);
+const storage = getStorage(app);
 
 // Enable Firestore persistence for offline support
-firestore().settings({
-  persistence: true,
-  cacheSizeBytes: firestore.CACHE_SIZE_UNLIMITED,
-});
-
-// Configure Storage for maximum compatibility
-if (Platform.OS === 'android') {
-  storage().setMaxUploadRetryTime(120000); // 2 minutes
-  storage().setMaxDownloadRetryTime(120000); // 2 minutes
+if (Platform.OS !== 'web') {
+  // Only enable persistence on native platforms
+  enableIndexedDbPersistence(firestore)
+    .catch((err) => {
+      console.error('Firebase persistence error:', err);
+    });
 }
 
-export { firebase, auth, firestore, storage };
+export { app, auth, firestore, storage };

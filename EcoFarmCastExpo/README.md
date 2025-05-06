@@ -1,6 +1,6 @@
-# Welcome to your Expo app 👋
+# EcoFarmCast - Sustainable Farming App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is an [Expo](https://expo.dev) project for the EcoFarmCast application, a platform designed to help farmers implement sustainable practices through data-driven insights and recommendations.
 
 ## Get started
 
@@ -13,7 +13,17 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 2. Start the app
 
    ```bash
-   npx expo start
+   # Standard start
+   npm start
+   
+   # Start in development mode (bypasses authentication)
+   npm run start:dev
+   
+   # Start in production mode (uses real authentication)
+   npm run start:prod
+   
+   # Start web version in development mode
+   npm run web:dev
    ```
 
 In the output, you'll find options to open the app in a
@@ -25,15 +35,49 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-## Get a fresh project
+## Development Mode
 
-When you're ready, run:
+EcoFarmCast includes a development mode feature that makes testing and development easier by:
+
+- Bypassing Firebase authentication
+- Using mock user data
+- Allowing access to all app features without requiring login
+- Displaying a visual indicator when active
+
+### Using Development Mode
+
+You can run the app in development mode using:
 
 ```bash
-npm run reset-project
+npm run start:dev    # For native development
+npm run web:dev      # For web development
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Or switch to production mode with:
+
+```bash
+npm run start:prod   # For native development
+npm run web:prod     # For web development
+```
+
+### Configuring Development Mode
+
+You can customize development mode settings in `src/config/devConfig.js`:
+
+```javascript
+// Toggle development mode on/off
+export const USE_DEV_MODE = true; // Set to false for production
+
+// Customize the mock user
+export const MOCK_USER = {
+  uid: 'test-user-id',
+  email: 'test@example.com',
+  displayName: 'Test Farmer',
+  // ...
+};
+```
+
+For more details, see [DEV_MODE_README.md](./DEV_MODE_README.md).
 
 ## Learn more
 
