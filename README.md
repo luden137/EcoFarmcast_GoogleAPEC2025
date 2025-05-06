@@ -1,111 +1,94 @@
- # EcoFarmCast
+# EcoFarmCast - Sustainable Farming App
 
-A React Native mobile application for sustainable farming management and analysis.
+This is an [Expo](https://expo.dev) project for the EcoFarmCast application, a platform designed to help farmers implement sustainable practices through data-driven insights and recommendations.
 
-## Overview
+## Get started
 
-EcoFarmCast is a mobile application that helps farmers implement sustainable agricultural practices, track farm data, and receive AI-powered recommendations. The app provides tools for data collection, analysis, and sustainability tracking.
+1. Install dependencies
 
-## Features
-
-- **User Authentication**: Secure login and registration system
-- **Farm Data Management**: Record and manage soil conditions, crop details, and equipment usage
-- **AI-Powered Analysis**: Get insights and recommendations based on your farm data
-- **Sustainability Tracking**: Monitor environmental impact and explore carbon credit opportunities
-- **Offline Support**: Access and update your data even without an internet connection
-
-## Prerequisites
-
-- Node.js (v16 or newer)
-- npm or yarn
-- React Native CLI
-- Android Studio (for Android development)
-- Xcode (for iOS development, macOS only)
-- Firebase project with Authentication, Firestore, and Storage enabled
-
-## Installation
-
-1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/ecofarmcast.git
-   cd ecofarmcast
-   ```
-
-2. Install dependencies:
-   ```
+   ```bash
    npm install
-   # or
-   yarn install
    ```
 
-3. Configure Firebase:
-   - Create a Firebase project at https://console.firebase.google.com/
-   - Enable Authentication, Firestore, and Storage services
-   - Update the Firebase configuration in `src/config/firebase.js` with your project credentials
-   - Create a `.env` file in the root directory with your Firebase and API keys:
-     ```
-     REACT_APP_FIREBASE_API_KEY=your-api-key
-     REACT_APP_FIREBASE_AUTH_DOMAIN=your-auth-domain
-     REACT_APP_FIREBASE_PROJECT_ID=your-project-id
-     REACT_APP_FIREBASE_STORAGE_BUCKET=your-storage-bucket
-     REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
-     REACT_APP_FIREBASE_APP_ID=your-app-id
-     REACT_APP_FIREBASE_MEASUREMENT_ID=your-measurement-id
-     REACT_APP_GEMINI_API_KEY=your-gemini-api-key
-     ```
+2. Start the app
 
-4. Run the app:
+   ```bash
+   # Standard start
+   npm start
    
-   For Android:
-   ```
-   npm run android
-   # or
-   yarn android
-   ```
+   # Start in development mode (bypasses authentication)
+   npm run start:dev
    
-   For iOS (macOS only):
-   ```
-   npm run ios
-   # or
-   yarn ios
-   ```
-   on web
-   ```
-   #in dev mode
+   # Start in production mode (uses real authentication)
+   npm run start:prod
+   
+   # Start web version in development mode
    npm run web:dev
-   # or in product mode
-   npm run web:prod
    ```
-## Project Structure
 
+In the output, you'll find options to open the app in a
+
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+
+You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+
+## Development Mode
+
+EcoFarmCast includes a development mode feature that makes testing and development easier by:
+
+- Bypassing Firebase authentication
+- Using mock user data
+- Allowing access to all app features without requiring login
+- Displaying a visual indicator when active
+
+### Using Development Mode
+
+You can run the app in development mode using:
+
+```bash
+npm run start:dev    # For native development
+npm run web:dev      # For web development
 ```
-src/
-- assets/         # Images, fonts, and other static assets
-- components/     # Reusable UI components
-- config/         # Configuration files (Firebase, theme, etc.)
-- context/        # React Context providers
-- hooks/          # Custom React hooks
-- navigation/     # Navigation configuration
-- screens/        # App screens
-- services/       # API and service integrations
-- utils/          # Utility functions and helpers
+
+Or switch to production mode with:
+
+```bash
+npm run start:prod   # For native development
+npm run web:prod     # For web development
 ```
 
-## AI Integration
+### Configuring Development Mode
 
-The app integrates with Google's Gemini AI to provide:
+You can customize development mode settings in `src/config/devConfig.js`:
 
-1. **Crop Recommendations**: Based on soil type, climate, and farm goals
-2. **Carbon Credit Analysis**: Calculate potential carbon credits from sustainable practices
-3. **Energy Optimization**: Recommendations for reducing energy usage and costs
+```javascript
+// Toggle development mode on/off
+export const USE_DEV_MODE = true; // Set to false for production
 
-## Development Notes
+// Customize the mock user
+export const MOCK_USER = {
+  uid: 'test-user-id',
+  email: 'test@example.com',
+  displayName: 'Test Farmer',
+  // ...
+};
+```
 
-- The app uses React Native Paper for UI components
-- Firebase is used for authentication, database, and storage
-- The app supports both iOS and Android platforms
-- Offline support is implemented using Firestore persistence
+For more details, see [DEV_MODE_README.md](./DEV_MODE_README.md).
 
-## License
+## Learn more
 
-[MIT License](LICENSE)
+To learn more about developing your project with Expo, look at the following resources:
+
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+
+## Join the community
+
+Join our community of developers creating universal apps.
+
+- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.

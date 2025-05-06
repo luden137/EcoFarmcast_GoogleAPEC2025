@@ -1,72 +1,79 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
 # dependencies
-/node_modules
-/.pnp
-.pnp.js
 node_modules/
-
-# testing
-/coverage
-.jest/
-
-# production
-/build
-/web-build
-/dist
-build/
-out/
 
 # Expo
 .expo/
-.dev/
-web-build/
 dist/
+web-build/
 expo-env.d.ts
+
+# Native
+.kotlin/
+*.orig.*
 *.jks
 *.p8
 *.p12
 *.key
 *.mobileprovision
-*.orig.*
-
-# Native
-.kotlin/
-android/
-ios/
-*.apk
-*.aab
-*.ipa
 
 # Metro
 .metro-health-check*
 
-# misc
-.DS_Store
-.env
-.env*.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# logs
+# debug
 npm-debug.*
 yarn-debug.*
 yarn-error.*
-*.log
-*.tmp
 
-# IDE files
-.idea/
-.vscode/
-*.swp
-*.swo
+# macOS
+.DS_Store
+*.pem
 
-# TypeScript
+# local env files
+.env*.local
+
+# typescript
 *.tsbuildinfo
 
-# Old project files (if you want to keep them in the repo but not track changes)
-/src
-/public
-/react-native-ecofarmcast
-
-# Example files
 app-example
+
+# Learn more: https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# ===== 依赖包 =====
+node_modules/
+
+# ===== 构建输出 =====
+# 如果项目使用 webpack、Rollup、Parcel 等构建工具，请根据实际输出目录更新
+dist/
+build/
+web-build/
+
+# ===== Expo（如果仅用于 Web 项目，可保留或移除） =====
+.expo/
+expo-env.d.ts
+
+# ===== 调试日志 =====
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===== 环境变量文件 =====
+.env
+.env.local
+.env.*.local
+
+# ===== TypeScript 相关 =====
+*.tsbuildinfo
+
+# ===== 常见平台生成文件 =====
+# macOS 文件
+.DS_Store
+
+# ===== 覆盖或额外的忽略项 =====
+# 覆盖例子目录，不加入版本控制
+app-example
+
+# ===== 可选：缓存文件（根据项目情况添加） =====
+.cache/
+coverage/
