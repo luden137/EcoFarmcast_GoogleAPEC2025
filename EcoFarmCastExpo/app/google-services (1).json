@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "816193574291",
+    "project_id": "apec-ecofarmcast",
+    "storage_bucket": "apec-ecofarmcast.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:816193574291:android:0555ed67e3322008990466",
+        "android_client_info": {
+          "package_name": "com.ecofarmcast"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQ6d3WODfEiUPJapQm1OoHfkBVdeAyxgg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -14,3 +14,12 @@ local.properties
 
 # Bundle artifacts
 *.jsbundle
+
+# Gradle
+.gradle/
+build/
+**/build/
+!gradle-wrapper.jar
+.gradle/caches/
+.gradle/daemon/
+.gradle/wrapper/
