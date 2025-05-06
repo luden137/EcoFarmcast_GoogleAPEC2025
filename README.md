@@ -69,7 +69,13 @@ EcoFarmCast is a mobile application that helps farmers implement sustainable agr
    # or
    yarn ios
    ```
-
+   on web
+   ```
+   #in dev mode
+   npm run web:dev
+   # or in product mode
+   npm run web:prod
+   ```
 ## Project Structure
 
 ```
