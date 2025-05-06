@@ -40,40 +40,65 @@ app-example
 
 # Learn more: https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
-# ===== 依赖包 =====
+# ===== Dependencies =====
 node_modules/
 
-# ===== 构建输出 =====
-# 如果项目使用 webpack、Rollup、Parcel 等构建工具，请根据实际输出目录更新
+# ===== Build Output =====
+# If the project uses webpack, Rollup, Parcel or other build tools, update according to actual output directory
 dist/
 build/
 web-build/
 
-# ===== Expo（如果仅用于 Web 项目，可保留或移除） =====
+# ===== Expo (can be kept or removed if only used for Web projects) =====
 .expo/
 expo-env.d.ts
 
-# ===== 调试日志 =====
+# ===== Debug Logs =====
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# ===== 环境变量文件 =====
+# ===== Environment Variable Files =====
 .env
 .env.local
 .env.*.local
 
-# ===== TypeScript 相关 =====
+# ===== TypeScript Related =====
 *.tsbuildinfo
 
-# ===== 常见平台生成文件 =====
-# macOS 文件
+# ===== Common Platform Generated Files =====
+# macOS files
 .DS_Store
 
-# ===== 覆盖或额外的忽略项 =====
-# 覆盖例子目录，不加入版本控制
+# ===== Override or Additional Ignore Items =====
+# Override example directory, do not include in version control
 app-example
 
-# ===== 可选：缓存文件（根据项目情况添加） =====
+# ===== Optional: Cache Files (add according to project needs) =====
 .cache/
 coverage/
+
+# ===== IDE relative =====
+.idea/
+.vscode/
+
+# ===== Android specific files =====
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/captures/
+android/gradlew
+android/gradlew.bat
+android/gradle/
+*.hprof
+*.iml
+
+# Gradle
+.gradle/
+build/
+**/build/
+!gradle-wrapper.jar
+.gradle/caches/
+.gradle/daemon/
+.gradle/wrapper/
