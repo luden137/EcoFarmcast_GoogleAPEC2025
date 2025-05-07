@@ -18,6 +18,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import useAuth from '../hooks/useAuth';
+import { useRouter } from 'expo-router';
 
 const FeatureCard = ({ title, description, icon, buttonText, onPress }) => {
   const theme = useTheme();
@@ -46,7 +47,8 @@ const FeatureCard = ({ title, description, icon, buttonText, onPress }) => {
   );
 };
 
-const HomeScreen = ({ navigation }) => {
+export const HomeScreen = ({ navigation }) => {
+  const router = useRouter();
   const { currentUser } = useAuth();
   const theme = useTheme();
   
@@ -56,28 +58,28 @@ const HomeScreen = ({ navigation }) => {
       description: 'Record and manage your farm data including soil conditions, crop details, and equipment usage.',
       icon: 'clipboard-text',
       buttonText: 'Enter Data',
-      onPress: () => navigation.navigate('DataEntry')
+      onPress: () => router.replace("/data_entry")
     },
     {
       title: 'Analysis',
       description: 'Get insights and recommendations based on your farm data and environmental conditions.',
       icon: 'chart-bar',
       buttonText: 'View Analysis',
-      onPress: () => navigation.navigate('Analysis')
+      onPress: () => router.replace("/analysis")
     },
     {
       title: 'Sustainability',
       description: 'Track your environmental impact and explore opportunities for carbon credits.',
       icon: 'leaf',
       buttonText: 'Check Impact',
-      onPress: () => navigation.navigate('Analysis')
+      onPress: () => router.replace("/analysis")
     },
     {
       title: 'Trends',
       description: 'Monitor agricultural trends and market conditions affecting your farm.',
       icon: 'trending-up',
       buttonText: 'View Trends',
-      onPress: () => navigation.navigate('Analysis')
+      onPress: () => router.replace("/analysis")
     }
   ];
 
@@ -119,7 +121,7 @@ const HomeScreen = ({ navigation }) => {
             </Text>
             <Button
               mode="outlined"
-              onPress={() => navigation.navigate('DataEntry')}
+              onPress={() =>  router.replace("/data_entry")}
               style={styles.statCardButton}
             >
               Enter Data
@@ -133,7 +135,7 @@ const HomeScreen = ({ navigation }) => {
             </Text>
             <Button
               mode="outlined"
-              onPress={() => navigation.navigate('Onboarding')}
+              onPress={() =>  router.replace("/onboarding")}
               style={styles.statCardButton}
             >
               Complete Profile

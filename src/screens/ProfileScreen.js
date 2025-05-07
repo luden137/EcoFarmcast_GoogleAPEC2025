@@ -12,8 +12,10 @@ import {
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useAuth from '../hooks/useAuth';
+import { useRouter } from 'expo-router';
 
 const ProfileScreen = ({ navigation }) => {
+  const router = useRouter();
   const theme = useTheme();
   const { currentUser, logout } = useAuth();
 

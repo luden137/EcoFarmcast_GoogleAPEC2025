@@ -2,8 +2,10 @@ import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text, Button, Surface, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter} from 'expo-router';
 
 const OnboardingScreen = ({ navigation }) => {
+  const router = useRouter();
   const theme = useTheme();
 
   return (
@@ -30,7 +32,7 @@ const OnboardingScreen = ({ navigation }) => {
           
           <Button
             mode="contained"
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => router.replace("/home")}
             style={styles.button}
           >
             Return to Home

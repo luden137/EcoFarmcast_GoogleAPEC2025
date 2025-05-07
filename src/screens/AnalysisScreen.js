@@ -13,8 +13,10 @@ import {
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useRouter } from 'expo-router';
 
 const AnalysisScreen = ({ navigation }) => {
+  const router = useRouter();
   const theme = useTheme();
   const [analysisType, setAnalysisType] = useState('crops');
 
@@ -26,6 +28,7 @@ const AnalysisScreen = ({ navigation }) => {
   ];
 
   const renderAnalysisContent = () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     switch (analysisType) {
       case 'crops':
         return (
@@ -33,8 +36,8 @@ const AnalysisScreen = ({ navigation }) => {
             <Card.Content>
               <Title>Crop Recommendations</Title>
               <Paragraph>
-                This section will provide AI-powered crop recommendations based on your soil type, 
-                climate conditions, and farm goals. Enter your farm data to receive personalized 
+                This section will provide AI-powered crop recommendations based on your soil type,
+                climate conditions, and farm goals. Enter your farm data to receive personalized
                 recommendations.
               </Paragraph>
               <View style={styles.placeholderContainer}>
@@ -53,8 +56,8 @@ const AnalysisScreen = ({ navigation }) => {
             <Card.Content>
               <Title>Carbon Credits</Title>
               <Paragraph>
-                Track your carbon footprint and explore opportunities for carbon credits. 
-                This analysis will help you understand how your farming practices impact 
+                Track your carbon footprint and explore opportunities for carbon credits.
+                This analysis will help you understand how your farming practices impact
                 the environment and how you can monetize sustainable practices.
               </Paragraph>
               <View style={styles.placeholderContainer}>
@@ -73,8 +76,8 @@ const AnalysisScreen = ({ navigation }) => {
             <Card.Content>
               <Title>Energy Optimization</Title>
               <Paragraph>
-                Analyze your energy usage and discover opportunities for optimization. 
-                This section will provide recommendations for reducing energy costs 
+                Analyze your energy usage and discover opportunities for optimization.
+                This section will provide recommendations for reducing energy costs
                 and improving efficiency on your farm.
               </Paragraph>
               <View style={styles.placeholderContainer}>
@@ -109,12 +112,12 @@ const AnalysisScreen = ({ navigation }) => {
             buttons={analysisTypes}
             style={styles.segmentedButtons}
           />
-          
+
           {renderAnalysisContent()}
-          
+
           <Button
             mode="contained"
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => router.replace("/home")}
             style={styles.button}
           >
             Return to Home

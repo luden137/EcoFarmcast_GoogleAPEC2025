@@ -16,7 +16,12 @@ const devConfigPath = path.join(__dirname, '..', 'src', 'config', 'devConfig.js'
 function ensureProdMode() {
   try {
     console.log('Checking development mode configuration...');
-    
+
+    if (!fs.existsSync(devConfigPath)) {
+      console.error(`Config file not found at: ${devConfigPath}`);
+      return false;
+    }
+
     // Read the current content of devConfig.js
     let content = fs.readFileSync(devConfigPath, 'utf8');
     

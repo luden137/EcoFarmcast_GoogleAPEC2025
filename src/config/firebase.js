@@ -6,13 +6,13 @@ import { getStorage } from 'firebase/storage';
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-  authDomain: "ecofarmcast.firebaseapp.com",
-  projectId: "ecofarmcast",
-  storageBucket: "ecofarmcast.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abcdef1234567890",
-  measurementId: "G-ABCDEFGHIJ"
+  apiKey: "AIzaSyD3v5HR6sg0YHyChfHxfMTGmMvFNNMqPUA",
+  authDomain: "gdg-ecofarm.firebaseapp.com",
+  projectId: "gdg-ecofarm",
+  storageBucket: "gdg-ecofarm.firebasestorage.app",
+  messagingSenderId: "300354674967",
+  appId: "1:300354674967:web:283fe21b943450dbe65752",
+  measurementId: "G-7T1C5GDDQ0"
 };
 
 // Initialize Firebase

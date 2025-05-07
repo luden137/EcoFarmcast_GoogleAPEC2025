@@ -3,8 +3,10 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text, Button, Surface, useTheme, List, Divider } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useRouter } from 'expo-router';
 
 const DataEntryScreen = ({ navigation }) => {
+  const router = useRouter();
   const theme = useTheme();
 
   const dataCategories = [
@@ -74,7 +76,7 @@ const DataEntryScreen = ({ navigation }) => {
           
           <Button
             mode="contained"
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => router.replace("/home")}
             style={styles.button}
           >
             Return to Home
