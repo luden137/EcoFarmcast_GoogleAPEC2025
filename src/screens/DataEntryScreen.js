@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Text, Button, Surface, useTheme, List, Divider } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -53,9 +53,9 @@ const DataEntryScreen = ({ navigation }) => {
         </Surface>
 
         <Surface style={styles.categoriesSurface}>
-          <Text style={styles.sectionTitle}>Coming Soon</Text>
+          <Text style={styles.sectionTitle}>Farm Data Categories</Text>
           <Text style={styles.description}>
-            The data entry functionality is under development. You'll be able to enter data in these categories:
+            Select a category to enter or update your farm data:
           </Text>
           
           <List.Section>
@@ -66,7 +66,18 @@ const DataEntryScreen = ({ navigation }) => {
                   description={category.description}
                   left={props => <List.Icon {...props} icon={category.icon} />}
                   right={props => <List.Icon {...props} icon="chevron-right" />}
-                  onPress={() => {}}
+                  onPress={() => {
+                    // Navigate to the appropriate form screen based on the category
+                    if (category.title === 'Basic Information') {
+                      router.push('/basic_info');
+                    } else {
+                      // For other categories, show a "coming soon" message
+                      Alert.alert(
+                        'Coming Soon',
+                        `The ${category.title} form is under development.`
+                      );
+                    }
+                  }}
                   style={styles.listItem}
                 />
                 {index < dataCategories.length - 1 && <Divider />}

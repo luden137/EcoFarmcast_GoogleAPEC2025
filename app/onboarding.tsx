@@ -3,7 +3,7 @@
 // import { router } from 'expo-router';
 // import { useTheme } from 'react-native-paper';
 
-import onboardingScreen from "@/src/screens/OnboardingScreen";
+import onboardingScreen from "../src/screens/OnboardingScreen";
 
 export default onboardingScreen;
 // import useAuth from '@/src/hooks/useAuth';

@@ -57,7 +57,8 @@ const LoginScreen = ({ navigation }) => {
     try {
       setLoading(true);
       await login(email, password);
-      // Navigation is handled by the AppNavigator based on auth state
+      // Navigate to home screen after successful login
+      router.replace('/home');
     } catch (error) {
       let errorMessage = 'Failed to log in';
 
@@ -137,7 +138,7 @@ const LoginScreen = ({ navigation }) => {
 
             <Button
               mode="contained"
-              onPress={router.replace('/home')}
+              onPress={handleLogin}
               loading={loading}
               disabled={loading}
               style={styles.button}
@@ -146,7 +147,7 @@ const LoginScreen = ({ navigation }) => {
             </Button>
             
             <TouchableOpacity
-              onPress={() => router.replace('/signup')}
+              onPress={() => router.replace('/(auth)/signup')}
               style={styles.linkContainer}
             >
               <Text style={styles.linkText}>

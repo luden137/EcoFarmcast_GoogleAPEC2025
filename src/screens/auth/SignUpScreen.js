@@ -16,8 +16,10 @@ import {
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useAuth from '../../hooks/useAuth';
+import { useRouter } from 'expo-router';
 
-const SignUpScreen = ({ navigation }) => {
+const SignUpScreen = () => {
+  const router = useRouter();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -70,7 +72,8 @@ const SignUpScreen = ({ navigation }) => {
     try {
       setLoading(true);
       await signup(email, password, name);
-      // Navigation is handled by the AppNavigator based on auth state
+      // Navigate to home screen after successful signup
+      router.replace('/home');
     } catch (error) {
       let errorMessage = 'Failed to create account';
       
@@ -159,7 +162,7 @@ const SignUpScreen = ({ navigation }) => {
             </Button>
             
             <TouchableOpacity
-              onPress={() => navigation.navigate('Login')}
+              onPress={() => router.replace('/(auth)/login')}
               style={styles.linkContainer}
             >
               <Text style={styles.linkText}>

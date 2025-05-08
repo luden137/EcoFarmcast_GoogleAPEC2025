@@ -6,8 +6,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { useColorScheme, View } from 'react-native';
 import { PaperProvider, MD3LightTheme } from 'react-native-paper';
-import { AuthProvider } from '@/src/context/AuthContext';
-import DevModeIndicator from '@/components/DevModeIndicator';
+import { AuthProvider } from '../src/context/AuthContext';
+import DevModeIndicator from '../components/DevModeIndicator';
+import React from 'react';
 
 // Create a custom theme for the app
 const appTheme = {
@@ -32,7 +33,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: 'home',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -71,7 +72,7 @@ function RootLayoutNav() {
         <AuthProvider>
           <View style={{ flex: 1 }}>
             <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="home" options={{ headerShown: false }} />
               <Stack.Screen name="(auth)" options={{ headerShown: false }} />
               <Stack.Screen name="onboarding" options={{ headerShown: false }} />
               <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
