@@ -1,21 +1,22 @@
+# backend/api_client/weather_api.py
 import requests
 
 API_KEY = "YOUR_OPENWEATHERMAP_KEY"
-URL = "https://api.openweathermap.org/data/2.5/onecall"
+URL = "https://api.openweathermap.org/data/2.5/weather"
 
 def get_climate_features(lat, lon):
     params = {
         "lat": lat,
         "lon": lon,
-        "exclude": "minutely,hourly,daily,alerts",
         "appid": API_KEY,
         "units": "metric"
     }
+
     r = requests.get(URL, params=params)
-    d = r.json()["current"]
+    d = r.json()
 
     return {
-        "avg_temp": d["temp"],
-        "rainfall": d.get("rain", {}).get("1h", 0) * 24 * 365,  # rough estimate
-        "sunlight": 2000  # 可用光照固定值，或从别处查
+        "avg_temp": d["main"]["temp"],
+        "humidity": d["main"]["humidity"],
+        "windspeed": d["wind"]["speed"]
     }
