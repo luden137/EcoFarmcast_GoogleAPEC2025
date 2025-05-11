@@ -1,34 +1,44 @@
+# utils/encode_features_full.py
 import numpy as np
+import joblib
+import os
 
-# Define the order of fields used in the model
-FEATURE_ORDER = [
-    "avg_temp", "rainfall", "sunlight",
-    "ph", "clay", "sand", "ocd", "bdod",
-    "price", "volatility", "export_ratio"
+ENCODER_PATH = os.path.join(os.path.dirname(__file__), "..", "model", "encoder.pkl")
+encoder = joblib.load(ENCODER_PATH)
+
+NUMERIC_FEATURE_ORDER = [
+    "ph", "temperature", "humidity", "windspeed",
+    "N", "P", "K", "soil_quality_index"
 ]
+
+DEFAULTS = {
+    "Crop_Type": "Wheat",
+    "Soil_Type": "Loamy",
+    "ph": 6.5,
+    "temperature": 25.0,
+    "humidity": 60.0,
+    "windspeed": 5.0,
+    "N": 50,
+    "P": 50,
+    "K": 50,
+    "soil_quality_index": 20
+}
+
 
 def encode_features(raw_features):
     """
-    Convert the input features in dict format into a numpy array, in order of FEATURE-ORDER.
-    If a field is missing, fill in the default value.
+    Encode categorical and numeric features into the full model input format.
+    - raw_features: dict with keys like 'Crop_Type', 'Soil_Type', 'ph', ...
+    - returns: numpy array of shape (1, n_features)
     """
-    defaults = {
-        "avg_temp": 25.0,
-        "rainfall": 1000.0,
-        "sunlight": 2000,
-        "ph": 6.5,
-        "clay": 20.0,
-        "sand": 30.0,
-        "ocd": 3.0,
-        "bdod": 1.3,
-        "price": 200.0,
-        "volatility": 0.1,
-        "export_ratio": 0.2
-    }
+    # 1. Extract and encode category features
+    crop = raw_features.get("Crop_Type", DEFAULTS["Crop_Type"])
+    soil = raw_features.get("Soil_Type", DEFAULTS["Soil_Type"])
+    cat_array = encoder.transform([[crop, soil]])  # shape: (1, ?)
 
-    features = []
-    for key in FEATURE_ORDER:
-        value = raw_features.get(key, defaults[key])
-        features.append(value)
+    # 2. Extract and concatenate numerical features in order
+    num_values = [raw_features.get(key, DEFAULTS[key]) for key in NUMERIC_FEATURE_ORDER]
+    num_array = np.array([num_values])  # shape: (1, 8)
 
-    return np.array([features])
+    # 3. Splicing and returning
+    return np.hstack([cat_array, num_array])

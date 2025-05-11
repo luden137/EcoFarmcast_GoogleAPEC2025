@@ -1,23 +1,39 @@
 import requests
 
-url = "https://rest.isric.org/soilgrids/v2.0/properties/query"
+import requests
 
 def get_soil_features(lat, lon):
-    params = {
-        "lon": lon,
-        "lat": lat,
-        "property": "phh2o,clay",
-        "depth": "0-5cm"
-    }
-    r = requests.get(url, params=params)
-    data = r.json()
+    url = (
+        f"https://rest.isric.org/soilgrids/v2.0/properties/query"
+        f"?lon={lon}&lat={lat}&property=phh2o&property=nitrogen"
+        f"&depth=0-30cm&value=mean"
+    )
 
-    result = {
-        "ph": data["properties"]["phh2o"]["values"]["0-5cm"]["mean"],
-        "N": 40,  
-        "P": 35,  
-        "K": 45,   
-        "soil_quality_index": 0.75  
-    }
+    try:
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
 
-    return result
+        data = response.json()
+        ph = data['properties']['phh2o']['mean']
+        nitrogen = data['properties']['nitrogen']['mean']
+
+        return {
+            "ph": ph,
+            "N": nitrogen,
+            "P": 50,
+            "K": 50,
+            "soil_quality_index": 20
+        }
+
+    except Exception as e:
+        print(f"⚠️ Soil API fallback due to: {e}")
+        return {
+            "ph": 6.5,
+            "N": 50,
+            "P": 50,
+            "K": 50,
+            "soil_quality_index": 20
+        }
+
+
+
