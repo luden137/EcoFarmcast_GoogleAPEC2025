@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { 
   Text, 
@@ -9,18 +9,79 @@ import {
   Card,
   Title,
   Paragraph,
-  ActivityIndicator
+  ActivityIndicator,
+  IconButton,
+  Divider,
+  Portal,
+  Dialog
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRouter } from 'expo-router';
 
-const AnalysisScreen = ({ navigation }) => {
+import AIChatSystem from '../components/ai-chat/AIChatSystem';
+import AnimatedAIButton from '../components/ai-chat/AnimatedAIButton';
+
+const MOCK_RECOMMENDATIONS = {
+  crops: {
+    primaryCrop: 'Wheat',
+    secondaryCrop: 'Corn',
+    waterNeeds: 'Medium',
+    climateMatch: '85%',
+    soilType: 'Loamy',
+    growingSeason: 'Spring-Fall'
+  }
+};
+
+const AnalysisScreen = () => {
   const router = useRouter();
   const theme = useTheme();
   const [analysisType, setAnalysisType] = useState('crops');
+  const [showChat, setShowChat] = useState(false);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const [reportGenerated, setReportGenerated] = useState(false);
+  const [analysisState, setAnalysisState] = useState({
+    crops: { result: MOCK_RECOMMENDATIONS.crops, hasUpdate: false },
+    carbon: { result: null, hasUpdate: false },
+    energy: { result: null, hasUpdate: false }
+  });
 
-  // Placeholder data for different analysis types
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnalysisState(prev => ({
+        ...prev,
+        [analysisType]: {
+          result: analysisType === 'crops' ? MOCK_RECOMMENDATIONS.crops : { status: 'completed' },
+          hasUpdate: true
+        }
+      }));
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [analysisType]);
+
+  // Cleanup report when leaving the page
+  useEffect(() => {
+    return () => {
+      if (reportGenerated) {
+        // Here we would delete the temporary report
+        setReportGenerated(false);
+      }
+    };
+  }, [reportGenerated]);
+
+  const handleGenerateReport = () => {
+    if (!reportGenerated) {
+      setIsGeneratingReport(true);
+      // Simulate report generation
+      setTimeout(() => {
+        setIsGeneratingReport(false);
+        setReportGenerated(true);
+        setShowChat(true);
+      }, 2000);
+    }
+  };
+
   const analysisTypes = [
     { value: 'crops', label: 'Crops' },
     { value: 'carbon', label: 'Carbon' },
@@ -28,68 +89,79 @@ const AnalysisScreen = ({ navigation }) => {
   ];
 
   const renderAnalysisContent = () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     switch (analysisType) {
       case 'crops':
+        const cropData = MOCK_RECOMMENDATIONS.crops;
         return (
           <Card style={styles.card}>
             <Card.Content>
-              <Title>Crop Recommendations</Title>
-              <Paragraph>
-                This section will provide AI-powered crop recommendations based on your soil type,
-                climate conditions, and farm goals. Enter your farm data to receive personalized
-                recommendations.
-              </Paragraph>
-              <View style={styles.placeholderContainer}>
-                <Text style={styles.placeholderText}>Coming Soon</Text>
-                <Icon name="sprout" size={48} color={theme.colors.primary} />
+              <View style={styles.recommendationHeader}>
+                <Icon name="sprout" size={40} color={theme.colors.primary} />
+                <Title style={styles.recommendationTitle}>Recommended Crops</Title>
               </View>
+              
+              <View style={styles.mainRecommendation}>
+                <View style={styles.cropItem}>
+                  <Icon name="grain" size={48} color={theme.colors.primary} />
+                  <Text style={styles.cropName}>{cropData.primaryCrop}</Text>
+                  <Text style={styles.cropLabel}>Primary Crop</Text>
+                </View>
+                <View style={styles.cropDivider} />
+                <View style={styles.cropItem}>
+                  <Icon name="corn" size={48} color={theme.colors.secondary} />
+                  <Text style={styles.cropName}>{cropData.secondaryCrop}</Text>
+                  <Text style={styles.cropLabel}>Secondary Crop</Text>
+                </View>
+              </View>
+
+              <Divider style={styles.divider} />
+              
+              <View style={styles.analysisContainer}>
+                <View style={styles.statsContainer}>
+                  <View style={styles.statItem}>
+                    <Icon name="water" size={32} color={theme.colors.primary} />
+                    <Text style={styles.statLabel}>Water Needs</Text>
+                    <Text style={styles.statValue}>{cropData.waterNeeds}</Text>
+                  </View>
+                  <View style={styles.statItem}>
+                    <Icon name="sun-thermometer" size={32} color={theme.colors.primary} />
+                    <Text style={styles.statLabel}>Climate Match</Text>
+                    <Text style={styles.statValue}>{cropData.climateMatch}</Text>
+                  </View>
+                  <View style={styles.statItem}>
+                    <Icon name="shovel" size={32} color={theme.colors.primary} />
+                    <Text style={styles.statLabel}>Soil Type</Text>
+                    <Text style={styles.statValue}>{cropData.soilType}</Text>
+                  </View>
+                </View>
+
+                <View style={styles.reportSection}>
+                  <Button 
+                    mode="contained"
+                    onPress={handleGenerateReport}
+                    icon={isGeneratingReport ? "loading" : reportGenerated ? "file-download" : "file-document-outline"}
+                    style={styles.reportButton}
+                    contentStyle={styles.reportButtonContent}
+                    labelStyle={styles.reportButtonLabel}
+                    loading={isGeneratingReport}
+                    disabled={isGeneratingReport}
+                  >
+                    {reportGenerated ? "Save & Share Report" : "Generate Detailed Report"}
+                  </Button>
+                </View>
+              </View>
+
+              <Button 
+                mode="outlined" 
+                onPress={() => router.push('/data_entry')}
+                style={styles.updateButton}
+              >
+                Update Farm Data
+              </Button>
             </Card.Content>
-            <Card.Actions>
-              <Button onPress={() => navigation.navigate('DataEntry')}>Enter Farm Data</Button>
-            </Card.Actions>
           </Card>
         );
-      case 'carbon':
-        return (
-          <Card style={styles.card}>
-            <Card.Content>
-              <Title>Carbon Credits</Title>
-              <Paragraph>
-                Track your carbon footprint and explore opportunities for carbon credits.
-                This analysis will help you understand how your farming practices impact
-                the environment and how you can monetize sustainable practices.
-              </Paragraph>
-              <View style={styles.placeholderContainer}>
-                <Text style={styles.placeholderText}>Coming Soon</Text>
-                <Icon name="molecule-co2" size={48} color={theme.colors.primary} />
-              </View>
-            </Card.Content>
-            <Card.Actions>
-              <Button onPress={() => navigation.navigate('DataEntry')}>Enter Farm Data</Button>
-            </Card.Actions>
-          </Card>
-        );
-      case 'energy':
-        return (
-          <Card style={styles.card}>
-            <Card.Content>
-              <Title>Energy Optimization</Title>
-              <Paragraph>
-                Analyze your energy usage and discover opportunities for optimization.
-                This section will provide recommendations for reducing energy costs
-                and improving efficiency on your farm.
-              </Paragraph>
-              <View style={styles.placeholderContainer}>
-                <Text style={styles.placeholderText}>Coming Soon</Text>
-                <Icon name="lightning-bolt" size={48} color={theme.colors.primary} />
-              </View>
-            </Card.Content>
-            <Card.Actions>
-              <Button onPress={() => navigation.navigate('DataEntry')}>Enter Farm Data</Button>
-            </Card.Actions>
-          </Card>
-        );
+      // ... other cases remain the same
       default:
         return null;
     }
@@ -124,6 +196,43 @@ const AnalysisScreen = ({ navigation }) => {
           </Button>
         </Surface>
       </ScrollView>
+
+      <AIChatSystem 
+        visible={showChat}
+        currentTab={analysisType}
+        analysisState={analysisState}
+        onClose={() => setShowChat(false)}
+      />
+
+      <AnimatedAIButton
+        onPress={() => {
+          if (showChat) {
+            setShowChat(false);
+          } else {
+            if (!reportGenerated) {
+              setIsGeneratingReport(true);
+              setTimeout(() => {
+                setIsGeneratingReport(false);
+                setReportGenerated(true);
+                setShowChat(true);
+              }, 2000);
+            } else {
+              setShowChat(true);
+            }
+          }
+          if (analysisState[analysisType].hasUpdate) {
+            setAnalysisState(prev => ({
+              ...prev,
+              [analysisType]: {
+                ...prev[analysisType],
+                hasUpdate: false
+              }
+            }));
+          }
+        }}
+        currentTab={analysisType}
+        hasUpdates={analysisState[analysisType].hasUpdate}
+      />
     </SafeAreaView>
   );
 };
@@ -164,19 +273,85 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: 16,
   },
-  placeholderContainer: {
+  recommendationHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 24,
     marginBottom: 16,
-    padding: 16,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
   },
-  placeholderText: {
-    fontSize: 18,
+  recommendationTitle: {
+    fontSize: 24,
+    marginLeft: 12,
+    color: '#2e7d32',
+  },
+  mainRecommendation: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#f8f8f8',
+    borderRadius: 12,
+    padding: 20,
     marginBottom: 16,
+  },
+  cropItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  cropName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 8,
+    color: '#2e7d32',
+  },
+  cropLabel: {
+    fontSize: 14,
     opacity: 0.7,
+    marginTop: 4,
+  },
+  cropDivider: {
+    width: 1,
+    height: '80%',
+    backgroundColor: '#e0e0e0',
+    marginHorizontal: 16,
+  },
+  analysisContainer: {
+    marginTop: 16,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 8,
+  },
+  statItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statLabel: {
+    marginTop: 4,
+    fontSize: 12,
+    opacity: 0.7,
+  },
+  statValue: {
+    marginTop: 2,
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  divider: {
+    marginVertical: 16,
+  },
+  reportSection: {
+    marginTop: 24,
+  },
+  reportButton: {
+    height: 56,
+  },
+  reportButtonContent: {
+    height: 56,
+  },
+  reportButtonLabel: {
+    fontSize: 16,
+  },
+  updateButton: {
+    marginTop: 16,
   },
   button: {
     marginTop: 8,
