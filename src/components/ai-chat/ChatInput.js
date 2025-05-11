@@ -2,14 +2,20 @@ import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TextInput, IconButton, useTheme } from 'react-native-paper';
 
-const ChatInput = ({ onSend }) => {
+const ChatInput = ({ onSend, disabled }) => {
   const [message, setMessage] = useState('');
   const theme = useTheme();
 
   const handleSend = () => {
-    if (message.trim()) {
+    if (message.trim() && !disabled) {
       onSend(message.trim());
       setMessage('');
+    }
+  };
+
+  const handleKeyPress = ({ nativeEvent: { key } }) => {
+    if (key === 'Enter' && !disabled) {
+      handleSend();
     }
   };
 
@@ -19,15 +25,17 @@ const ChatInput = ({ onSend }) => {
         mode="outlined"
         value={message}
         onChangeText={setMessage}
+        onKeyPress={handleKeyPress}
         placeholder="Type your message..."
         multiline
-        maxLength={500}
+        disabled={disabled}
         style={styles.input}
         right={
           <TextInput.Icon
             icon="send"
+            disabled={!message.trim() || disabled}
             onPress={handleSend}
-            disabled={!message.trim()}
+            color={message.trim() && !disabled ? theme.colors.primary : theme.colors.disabled}
           />
         }
       />
@@ -37,13 +45,13 @@ const ChatInput = ({ onSend }) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 8,
-    backgroundColor: 'white',
+    padding: 16,
     borderTopWidth: 1,
-    borderTopColor: '#E5E5E5',
+    borderTopColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'white',
   },
   input: {
-    maxHeight: 100,
+    backgroundColor: 'white',
   },
 });
 

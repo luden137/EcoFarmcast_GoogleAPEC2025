@@ -1,57 +1,61 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, IconButton, useTheme } from 'react-native-paper';
+import { Appbar, Text, useTheme } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const ChatHeader = ({ currentTab, onClose }) => {
   const theme = useTheme();
 
-  const getTabColor = () => {
-    switch(currentTab) {
-      case 'crops':
-        return theme.colors.primary;
-      case 'carbon':
-        return theme.colors.secondary;
-      case 'energy':
-        return theme.colors.tertiary;
-      default:
-        return theme.colors.primary;
-    }
-  };
-
   return (
-    <View style={[styles.header, { borderBottomColor: getTabColor() }]}>
-      <Text style={styles.title}>AI Assistant</Text>
-      <Text style={[styles.subtitle, { color: getTabColor() }]}>
-        {currentTab.charAt(0).toUpperCase() + currentTab.slice(1)} Analysis
-      </Text>
-      <IconButton
-        icon="close"
-        size={24}
+    <Appbar.Header style={styles.header}>
+      <View style={styles.titleContainer}>
+        <Icon 
+          name="robot" 
+          size={24} 
+          color={theme.colors.primary}
+          style={styles.icon}
+        />
+        <Text style={styles.title}>EcoFarmCast AI Assistant</Text>
+      </View>
+      <View style={styles.tabContainer}>
+        <Text style={styles.tabText}>{currentTab}</Text>
+      </View>
+      <Appbar.Action 
+        icon="close" 
         onPress={onClose}
-        style={styles.closeButton}
+        color={theme.colors.text}
       />
-    </View>
+    </Appbar.Header>
   );
 };
 
 const styles = StyleSheet.create({
   header: {
-    padding: 16,
-    borderBottomWidth: 2,
+    elevation: 4,
     backgroundColor: 'white',
   },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  icon: {
+    marginRight: 8,
+  },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '500',
   },
-  subtitle: {
+  tabContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 16,
+    marginRight: 16,
+  },
+  tabText: {
     fontSize: 14,
-    marginTop: 4,
-  },
-  closeButton: {
-    position: 'absolute',
-    right: 8,
-    top: 8,
+    color: 'rgba(0, 0, 0, 0.6)',
   },
 });
 

@@ -1,112 +1,158 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, StyleSheet, TouchableWithoutFeedback } from 'react-native';
-import { FAB, Badge, useTheme } from 'react-native-paper';
+import { Animated, TouchableOpacity, StyleSheet, View } from 'react-native';
+import { useTheme } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const AnimatedAIButton = ({ onPress, currentTab, hasUpdates }) => {
+const AnimatedAIButton = ({ onPress, loading, hasUpdates }) => {
   const theme = useTheme();
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
+  const notificationAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (loading) {
+      // Start rotation animation
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(rotateAnim, {
+            toValue: 1,
+            duration: 2000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(rotateAnim, {
+            toValue: 0,
+            duration: 0,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+
+      // Start pulse animation
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1.2,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    } else {
+      // Stop animations
+      rotateAnim.setValue(0);
+      pulseAnim.setValue(1);
+    }
+  }, [loading, rotateAnim, pulseAnim]);
 
   useEffect(() => {
     if (hasUpdates) {
-      startPulseAnimation();
+      // Start notification animation
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(notificationAnim, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(notificationAnim, {
+            toValue: 0,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
     } else {
-      pulseAnim.setValue(1);
+      // Stop notification animation
+      notificationAnim.setValue(0);
     }
-  }, [hasUpdates]);
+  }, [hasUpdates, notificationAnim]);
 
-  const startPulseAnimation = () => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 1.2,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-  };
-
-  const handlePress = () => {
-    // Add rotation animation on press
-    Animated.timing(rotateAnim, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start(() => {
-      rotateAnim.setValue(0);
-      onPress();
-    });
-  };
-
-  const getButtonColor = () => {
-    switch(currentTab) {
-      case 'crops':
-        return theme.colors.primary;
-      case 'carbon':
-        return theme.colors.secondary;
-      case 'energy':
-        return theme.colors.tertiary;
-      default:
-        return theme.colors.primary;
-    }
-  };
-
-  const spin = rotateAnim.interpolate({
+  const rotate = rotateAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ['0deg', '180deg']
+    outputRange: ['0deg', '360deg'],
+  });
+
+  const notificationOpacity = notificationAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.4, 1],
   });
 
   return (
-    <TouchableWithoutFeedback onPress={handlePress}>
-      <Animated.View style={[
-        styles.container,
-        { 
-          transform: [
-            { scale: pulseAnim },
-            { rotate: spin }
-          ]
-        }
-      ]}>
-        <FAB
-          icon="robot"
-          color="white"
-          style={[styles.fab, { backgroundColor: getButtonColor() }]}
+    <TouchableOpacity
+      onPress={onPress}
+      disabled={loading}
+      style={styles.container}
+    >
+      {hasUpdates && (
+        <Animated.View
+          style={[
+            styles.notification,
+            {
+              backgroundColor: theme.colors.error,
+              opacity: notificationOpacity,
+            },
+          ]}
         />
-        {hasUpdates && (
-          <Badge
-            size={12}
-            style={[styles.badge, { backgroundColor: theme.colors.notification }]}
-          />
-        )}
+      )}
+      <Animated.View
+        style={[
+          styles.button,
+          {
+            backgroundColor: theme.colors.primary,
+            transform: [
+              { scale: pulseAnim },
+              { rotate },
+            ],
+          },
+        ]}
+      >
+        <Icon
+          name={loading ? 'robot-excited' : hasUpdates ? 'robot-excited' : 'robot'}
+          size={24}
+          color="white"
+        />
       </Animated.View>
-    </TouchableWithoutFeedback>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    right: 16,
-    bottom: 16,
-    elevation: 6,
+    bottom: 20,
+    right: 20,
+    zIndex: 1000,
   },
-  fab: {
-    borderRadius: 28,
+  button: {
     width: 56,
     height: 56,
+    borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
-  badge: {
+  notification: {
     position: 'absolute',
     top: -4,
     right: -4,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: 'white',
+    zIndex: 1,
   },
 });
 

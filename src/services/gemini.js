@@ -1,99 +1,115 @@
-/**
- * Service for interacting with Google's Gemini AI API
- * This service provides low-level functions for making requests to the Gemini API
- */
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { geminiConfig } from '../config/geminiConfig';
+import { GEMINI_API_KEY } from "@env";
 
-// API key would typically come from environment variables
-const apiKey = process.env.REACT_APP_GEMINI_API_KEY || "YOUR_GEMINI_API_KEY";
-const baseUrl = "https://generativelanguage.googleapis.com/v1beta/models";
-const defaultModel = "gemini-pro";
+const {
+  api: { defaultModel, maxTokens, defaultTemperature },
+  errorMessages
+} = geminiConfig;
+
+// Initialize the Gemini client with the API key from environment variables
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 /**
- * Generate content using Gemini AI
+ * Generate content using Gemini AI with context awareness
  * @param {string} prompt - The prompt to send to Gemini
+ * @param {Object} context - The current page context
  * @param {Object} options - Additional options for the API call
  * @returns {Promise<Object>} The response from Gemini
  */
-export const generateContent = async (prompt, options = {}) => {
-  const model = options.model || defaultModel;
-  
+export const generateContent = async (prompt, context, options = {}) => {
   try {
-    const response = await fetch(
-      `${baseUrl}/${model}:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: prompt
-                }
-              ]
-            }
-          ],
-          generationConfig: {
-            temperature: options.temperature || 0.7,
-            topK: options.topK || 40,
-            topP: options.topP || 0.95,
-            maxOutputTokens: options.maxOutputTokens || 1024,
-          },
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+    if (!GEMINI_API_KEY) {
+      throw new Error('Gemini API key is not configured');
     }
 
-    return await response.json();
+    // Use the model from config
+    const model = genAI.getGenerativeModel({ model: defaultModel });
+    
+    const pageConfig = geminiConfig.pages[context?.pageName];
+    if (!pageConfig) {
+      console.warn('No page config found for:', context?.pageName);
+    }
+    
+    const enhancedPrompt = pageConfig 
+      ? `${pageConfig.basePrompt}\n\n${prompt}`
+      : prompt;
+
+    const result = await model.generateContent({
+      contents: [{ parts: [{ text: enhancedPrompt }] }],
+      generationConfig: {
+        temperature: options.temperature || defaultTemperature,
+        topK: options.topK || 40,
+        topP: options.topP || 0.95,
+        maxOutputTokens: options.maxOutputTokens || maxTokens,
+      },
+    });
+
+    if (!result || !result.response) {
+      throw new Error('Invalid response from Gemini API');
+    }
+
+    const response = await result.response;
+    return {
+      text: response.text(),
+      suggestions: pageConfig?.suggestionChips || []
+    };
   } catch (error) {
     console.error('Error generating content with Gemini:', error);
-    throw error;
+    // Return a more user-friendly error message
+    return {
+      text: `I apologize, but I encountered an issue: ${error.message}. Please try again.`,
+      suggestions: []
+    };
   }
 };
 
 /**
- * Generate content with a specific agricultural focus
+ * Generate content with agricultural context
  * @param {string} prompt - The prompt to send to Gemini
- * @param {Object} options - Additional options for the API call
+ * @param {Object} context - The current page context
+ * @param {Object} farmData - Additional farm-specific data
  * @returns {Promise<Object>} The response from Gemini
  */
-export const generateAgriculturalContent = async (prompt, options = {}) => {
-  // Add agricultural context to the prompt
+export const generateAgriculturalContent = async (prompt, context, farmData = {}) => {
   const enhancedPrompt = `
-    As an agricultural expert with knowledge of sustainable farming practices, 
-    soil science, crop management, and environmental impact assessment, 
-    please provide detailed information on the following:
+    Context: ${context.pageName} page
+    Farm Details:
+    - Location: ${farmData.location || 'Unknown'}
+    - Size: ${farmData.size || 'Unknown'} acres
+    - Current crops: ${farmData.crops?.join(', ') || 'None'}
+    - Soil type: ${farmData.soilType || 'Unknown'}
     
-    ${prompt}
+    User Query: ${prompt}
     
-    Include specific, actionable recommendations that are practical for farmers to implement.
+    Please provide detailed, actionable insights based on this context.
   `;
   
-  return generateContent(enhancedPrompt, {
-    ...options,
-    temperature: options.temperature || 0.4, // Lower temperature for more focused responses
+  return generateContent(enhancedPrompt, context, {
+    temperature: 0.4 // Lower temperature for more focused responses
   });
 };
 
 /**
- * Analyze farm data and generate recommendations
+ * Analyze farm data with context awareness
  * @param {Object} farmData - Data about the farm
- * @returns {Promise<Object>} Recommendations for the farm
+ * @param {Object} context - The current page context
+ * @returns {Promise<Object>} Analysis and recommendations
  */
-export const analyzeFarmData = async (farmData) => {
+export const analyzeFarmData = async (farmData, context) => {
+  const pageConfig = geminiConfig.pages[context?.pageName];
+  const contextPrompt = pageConfig?.contextTemplate?.(context.pageData) || '';
+
   const prompt = `
+    ${contextPrompt}
+    
     Analyze the following farm data and provide comprehensive recommendations:
     - Location: ${farmData.location || 'Unknown'}
     - Size: ${farmData.size || 'Unknown'} acres
     - Current crops: ${farmData.crops?.join(', ') || 'None'}
     - Soil type: ${farmData.soilType || 'Unknown'}
     - Climate: ${farmData.climate || 'Unknown'}
-    - Equipment available: ${farmData.equipment?.join(', ') || 'Unknown'}
+    - Equipment: ${farmData.equipment?.join(', ') || 'Unknown'}
     - Goals: ${farmData.goals?.join(', ') || 'Sustainable farming'}
     
     Please provide detailed recommendations for:
@@ -104,63 +120,33 @@ export const analyzeFarmData = async (farmData) => {
     5. Potential for carbon credits and how to qualify
   `;
   
-  return generateAgriculturalContent(prompt, { temperature: 0.5 });
+  return generateContent(prompt, context, { temperature: 0.5 });
 };
 
 /**
- * Generate crop recommendations based on soil and climate data
- * @param {Object} data - Soil and climate data
- * @returns {Promise<Object>} Crop recommendations
+ * Generate page-specific recommendations
+ * @param {Object} context - The current page context
+ * @param {Object} data - Additional data for the recommendation
+ * @returns {Promise<Object>} Page-specific recommendations
  */
-export const generateCropRecommendations = async (data) => {
-  const prompt = `
-    Based on the following soil and climate conditions, recommend suitable crops:
-    - Soil type: ${data.soilType || 'Unknown'}
-    - Soil pH: ${data.soilPh || 'Unknown'}
-    - Annual rainfall: ${data.rainfall || 'Unknown'}
-    - Temperature range: ${data.temperatureRange || 'Unknown'}
-    - Growing season: ${data.growingSeason || 'Unknown'}
-    - Region: ${data.region || 'Unknown'}
-    
-    For each recommended crop, please provide:
-    1. Expected yield per acre
-    2. Water requirements
-    3. Fertilizer recommendations
-    4. Pest management considerations
-    5. Market potential
-  `;
-  
-  return generateAgriculturalContent(prompt, { temperature: 0.4 });
-};
+export const generatePageRecommendations = async (context, data = {}) => {
+  const pageConfig = geminiConfig.pages[context.pageName];
+  if (!pageConfig) {
+    throw new Error(errorMessages.contextMissing);
+  }
 
-/**
- * Calculate carbon footprint and potential credits
- * @param {Object} farmData - Data about the farm
- * @returns {Promise<Object>} Carbon footprint analysis
- */
-export const calculateCarbonImpact = async (farmData) => {
-  const prompt = `
-    Calculate the approximate carbon footprint for a farm with the following characteristics:
-    - Size: ${farmData.size || 'Unknown'} acres
-    - Current crops: ${farmData.crops?.join(', ') || 'None'}
-    - Farming practices: ${farmData.practices?.join(', ') || 'Conventional'}
-    - Equipment: ${farmData.equipment?.join(', ') || 'Standard agricultural equipment'}
-    - Energy sources: ${farmData.energySources?.join(', ') || 'Grid electricity and diesel'}
-    
-    Then, suggest sustainable practices that could:
-    1. Reduce this carbon footprint
-    2. Potentially qualify for carbon credits
-    3. Estimate the potential value of these carbon credits
-    4. Outline the verification process needed
-  `;
+  const contextData = pageConfig.contextTemplate(context.pageData);
+  const prompt = `${pageConfig.basePrompt}\n\n${contextData.content}`;
   
-  return generateAgriculturalContent(prompt, { temperature: 0.3 });
+  return generateContent(prompt, context, {
+    temperature: 0.4,
+    maxOutputTokens: maxTokens
+  });
 };
 
 export default {
   generateContent,
   generateAgriculturalContent,
   analyzeFarmData,
-  generateCropRecommendations,
-  calculateCarbonImpact
+  generatePageRecommendations
 };

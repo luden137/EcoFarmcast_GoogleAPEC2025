@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { useColorScheme, View } from 'react-native';
 import { PaperProvider, MD3LightTheme } from 'react-native-paper';
 import { AuthProvider } from '../src/context/AuthContext';
+import { GeminiProvider } from '../src/context/GeminiContext';
 import DevModeIndicator from '../components/DevModeIndicator';
 import React from 'react';
 
@@ -70,18 +71,20 @@ function RootLayoutNav() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <PaperProvider theme={appTheme}>
         <AuthProvider>
-          <View style={{ flex: 1 }}>
-            <Stack>
-              <Stack.Screen name="home" options={{ headerShown: false }} />
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-              <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-              <Stack.Screen name="analysis" options={{ headerShown: false }} />
-              <Stack.Screen name="data_entry" options={{ headerShown: false }} />
-              <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-            </Stack>
-            {/* Development mode indicator */}
-            <DevModeIndicator />
-          </View>
+          <GeminiProvider>
+            <View style={{ flex: 1 }}>
+              <Stack>
+                <Stack.Screen name="home" options={{ headerShown: false }} />
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+                <Stack.Screen name="analysis" options={{ headerShown: false }} />
+                <Stack.Screen name="data_entry" options={{ headerShown: false }} />
+                <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+              </Stack>
+              {/* Development mode indicator */}
+              <DevModeIndicator />
+            </View>
+          </GeminiProvider>
         </AuthProvider>
       </PaperProvider>
     </ThemeProvider>

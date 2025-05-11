@@ -1,48 +1,53 @@
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet } from 'react-native';
 import { Chip, useTheme } from 'react-native-paper';
 
-const SuggestionChips = ({ suggestions, onSelect }) => {
+const SuggestionChips = ({ suggestions = [], onSelect }) => {
   const theme = useTheme();
 
+  if (!suggestions.length) return null;
+
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-    >
-      {suggestions.map((suggestion, index) => (
-        <Chip
-          key={index}
-          mode="outlined"
-          onPress={() => onSelect(suggestion)}
-          style={styles.chip}
-          textStyle={styles.chipText}
-        >
-          {suggestion}
-        </Chip>
-      ))}
-    </ScrollView>
+    <View style={styles.container}>
+      <ScrollView 
+        horizontal 
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {suggestions.map((suggestion, index) => (
+          <Chip
+            key={index}
+            mode="outlined"
+            onPress={() => onSelect(suggestion)}
+            style={styles.chip}
+            textStyle={styles.chipText}
+            selectedColor={theme.colors.primary}
+          >
+            {suggestion}
+          </Chip>
+        ))}
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    maxHeight: 50,
-    backgroundColor: 'white',
-    borderTopWidth: 1,
-    borderTopColor: '#E5E5E5',
-  },
-  contentContainer: {
-    padding: 8,
     paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'white',
+  },
+  scrollContent: {
+    paddingRight: 8,
   },
   chip: {
     marginRight: 8,
+    marginBottom: 4,
   },
   chipText: {
-    fontSize: 12,
+    fontSize: 14,
   },
 });
 
