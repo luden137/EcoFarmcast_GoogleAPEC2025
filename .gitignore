@@ -59,7 +59,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # ===== Environment Variable Files =====
-.env
+
 .env.local
 .env.*.local
 
