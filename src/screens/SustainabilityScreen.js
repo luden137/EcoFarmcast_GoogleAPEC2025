@@ -12,7 +12,8 @@ import {
   Button,
   IconButton,
   Divider,
-  ProgressBar
+  ProgressBar,
+  Checkbox
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -23,7 +24,7 @@ import { USE_DEV_MODE } from '../config/devConfig';
 import AIChatSystem from '../components/ai-chat/AIChatSystem';
 import AnimatedAIButton from '../components/ai-chat/AnimatedAIButton';
 
-const RecommendationCard = ({ title, impact, difficulty, description }) => {
+const RecommendationCard = ({ title, impact, difficulty, description, checked, onToggle }) => {
   const theme = useTheme();
   
   const getDifficultyColor = (level) => {
@@ -40,8 +41,15 @@ const RecommendationCard = ({ title, impact, difficulty, description }) => {
       <Card.Content>
         <View style={styles.recommendationHeader}>
           <Title style={styles.recommendationTitle}>{title}</Title>
-          <View style={[styles.difficultyBadge, { backgroundColor: getDifficultyColor(difficulty) }]}>
-            <Text style={styles.difficultyText}>{difficulty}</Text>
+          <View style={styles.rightContainer}>
+            <View style={[styles.difficultyBadge, { backgroundColor: getDifficultyColor(difficulty) }]}>
+              <Text style={styles.difficultyText}>{difficulty}</Text>
+            </View>
+            <Checkbox.Android
+              status={checked ? 'checked' : 'unchecked'}
+              onPress={onToggle}
+              color={theme.colors.primary}
+            />
           </View>
         </View>
         <Paragraph style={styles.recommendationDescription}>{description}</Paragraph>
@@ -63,6 +71,14 @@ const SustainabilityScreen = () => {
   const [loading, setLoading] = useState(!USE_DEV_MODE);
   const [error, setError] = useState(null);
   const [sustainabilityData, setSustainabilityData] = useState(USE_DEV_MODE ? MOCK_SUSTAINABILITY_DATA : null);
+  const [checkedRecommendations, setCheckedRecommendations] = useState({});
+
+  const toggleRecommendation = (index) => {
+    setCheckedRecommendations(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
+  };
 
   useEffect(() => {
     const loadSustainabilityData = async () => {
@@ -142,7 +158,12 @@ const SustainabilityScreen = () => {
 
         <Title style={styles.sectionTitle}>Recommended Actions</Title>
         {recommendations.map((rec, index) => (
-          <RecommendationCard key={index} {...rec} />
+          <RecommendationCard 
+            key={index} 
+            {...rec} 
+            checked={checkedRecommendations[index]}
+            onToggle={() => toggleRecommendation(index)}
+          />
         ))}
       </View>
     );
@@ -268,7 +289,7 @@ const SustainabilityScreen = () => {
             <IconButton
               icon="arrow-left"
               size={24}
-              onPress={() => router.back()}
+              onPress={() => router.push('/home')}
               style={styles.backButton}
             />
             <View style={styles.titleContainer}>
@@ -425,6 +446,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 8,
+  },
+  rightContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   recommendationTitle: {
     fontSize: 18,
