@@ -3,7 +3,7 @@
 from api_client.weather_api import get_climate_features
 from api_client.soil_api import get_soil_features
 from api_client.market_api import get_market_price
-from utils.preprocess import encode_features_harvestsense
+from utils.preprocess import encode_features
 import joblib
 import os
 
@@ -43,6 +43,8 @@ def recommend_crop(lat, lon, country, manual_soil_data=None):
         market = get_market_price(crop, country)
         # Step 2: Merge features to match HarvestSense format
         features = {
+            "Crop_Type": "Wheat",
+            "Soil_Type": "Loamy",
             "ph": soil["ph"],
             "temperature": climate.get("avg_temp", 25.0),
             "humidity": climate.get("humidity", 60.0),
@@ -50,11 +52,11 @@ def recommend_crop(lat, lon, country, manual_soil_data=None):
             "N": soil.get("N", 50),
             "P": soil.get("P", 50),
             "K": soil.get("K", 50),
-            "soil_quality_index": soil.get("soil_quality_index", 0.7),
+            "soil_quality_index": soil.get("soil_quality_index", 20),
         }
 
         # Step 3: Vectorize input
-        X = encode_features_harvestsense(features)
+        X = encode_features(features)
 
         # Step 4: Predict yield
         predicted_yield = model.predict(X)[0]  # kg/m²
