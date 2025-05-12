@@ -77,8 +77,10 @@ function RootLayoutNav() {
                 <Stack.Screen name="home" options={{ headerShown: false }} />
                 <Stack.Screen name="(auth)" options={{ headerShown: false }} />
                 <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-                <Stack.Screen name="analysis" options={{ headerShown: false }} />
+                <Stack.Screen name="farm_insights" options={{ headerShown: false }} />
+                <Stack.Screen name="sustainability" options={{ headerShown: false }} />
                 <Stack.Screen name="data_entry" options={{ headerShown: false }} />
+                <Stack.Screen name="profile" options={{ headerShown: false }} />
                 <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
               </Stack>
               {/* Development mode indicator */}

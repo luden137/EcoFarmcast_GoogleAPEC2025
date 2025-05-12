@@ -54,46 +54,47 @@ export const HomeScreen = ({ navigation }) => {
   
   const features = [
     {
-      title: 'Data Entry',
-      description: 'Record and manage your farm data including soil conditions, crop details, and equipment usage.',
-      icon: 'clipboard-text',
-      buttonText: 'Enter Data',
-      onPress: () => router.replace("/data_entry")
+      title: 'Farm Insights',
+      description: 'Get comprehensive insights about your farm including soil, weather, market trends, and crop recommendations.',
+      icon: 'chart-box',
+      buttonText: 'View Insights',
+      onPress: () => router.replace("/farm_insights")
     },
     {
-      title: 'Analysis',
-      description: 'Get insights and recommendations based on your farm data and environmental conditions.',
-      icon: 'chart-bar',
-      buttonText: 'View Analysis',
-      onPress: () => router.replace("/analysis")
-    },
-    {
-      title: 'Sustainability',
-      description: 'Track your environmental impact and explore opportunities for carbon credits.',
+      title: 'Green Impact',
+      description: 'Track your environmental impact and explore sustainable farming opportunities.',
       icon: 'leaf',
-      buttonText: 'Check Impact',
-      onPress: () => router.replace("/analysis")
-    },
-    {
-      title: 'Trends',
-      description: 'Monitor agricultural trends and market conditions affecting your farm.',
-      icon: 'trending-up',
-      buttonText: 'View Trends',
-      onPress: () => router.replace("/trends")
+      buttonText: 'View Impact',
+      onPress: () => router.replace("/sustainability")
     }
   ];
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollView}>
-        {/* Welcome Section */}
+        {/* Header Section */}
         <Surface style={styles.welcomeSection}>
-          <Text style={styles.welcomeTitle}>
-            Welcome to EcoFarmCast, {currentUser?.displayName || 'Farmer'}!
-          </Text>
-          <Text style={styles.welcomeSubtitle}>
-            Your smart farming companion for sustainable agriculture
-          </Text>
+          <View style={styles.headerRow}>
+            <View style={styles.welcomeTextContainer}>
+              <Text style={styles.welcomeTitle}>
+                Welcome, {currentUser?.displayName || 'Farmer'}!
+              </Text>
+              <Text style={styles.welcomeSubtitle}>
+                Your smart farming companion
+              </Text>
+            </View>
+            <TouchableOpacity 
+              style={styles.avatarButton}
+              onPress={() => router.replace("/profile")}
+            >
+              <Avatar.Icon 
+                size={48} 
+                icon="account"
+                color={theme.colors.primary}
+                style={{ backgroundColor: theme.colors.background }}
+              />
+            </TouchableOpacity>
+          </View>
         </Surface>
 
         {/* Features Grid */}
@@ -110,44 +111,59 @@ export const HomeScreen = ({ navigation }) => {
           ))}
         </View>
 
-        {/* Quick Stats Section */}
-        <View style={styles.statsSection}>
-          <Text style={styles.sectionTitle}>Your Farm Overview</Text>
-          
-          <Surface style={styles.statCard}>
-            <Text style={styles.statCardTitle}>Recent Activity</Text>
-            <Text style={styles.statCardContent}>
-              No recent activity to display. Start by entering your farm data.
-            </Text>
-            <Button
-              mode="outlined"
-              onPress={() =>  router.replace("/data_entry")}
-              style={styles.statCardButton}
+        {/* Onboarding Guide Card */}
+        <Card style={styles.onboardingCard}>
+          <Card.Content>
+            <View style={styles.onboardingHeader}>
+              <Icon name="lightbulb-outline" size={32} color={theme.colors.primary} />
+              <Title style={styles.onboardingTitle}>New to EcoFarmCast?</Title>
+            </View>
+            <Paragraph style={styles.onboardingText}>
+              Let us guide you through setting up your farm profile and getting the most out of our features.
+            </Paragraph>
+          </Card.Content>
+          <Card.Actions>
+            <Button 
+              mode="contained"
+              onPress={() => router.replace("/onboarding")}
             >
-              Enter Data
+              Start Guide
             </Button>
-          </Surface>
-          
-          <Surface style={styles.statCard}>
-            <Text style={styles.statCardTitle}>Recommendations</Text>
-            <Text style={styles.statCardContent}>
-              Complete your farm profile to receive personalized recommendations.
-            </Text>
-            <Button
-              mode="outlined"
-              onPress={() =>  router.replace("/onboarding")}
-              style={styles.statCardButton}
-            >
-              Complete Profile
-            </Button>
-          </Surface>
-        </View>
+          </Card.Actions>
+        </Card>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  welcomeTextContainer: {
+    flex: 1,
+  },
+  avatarButton: {
+    marginLeft: 16,
+  },
+  onboardingCard: {
+    marginBottom: 24,
+  },
+  onboardingHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  onboardingTitle: {
+    marginLeft: 12,
+    fontSize: 20,
+  },
+  onboardingText: {
+    fontSize: 14,
+    opacity: 0.7,
+  },
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',

@@ -1,7 +1,7 @@
 import { USE_DEV_MODE } from '../config/devConfig';
 
 // Mock data for development
-const MOCK_MARKET_TRENDS = {
+export const MOCK_MARKET_TRENDS = {
   crops: [
     { name: 'Wheat', price: 350, change: '+5%' },
     { name: 'Corn', price: 280, change: '-2%' },
@@ -15,25 +15,31 @@ const MOCK_MARKET_TRENDS = {
     topPerformer: 'Cotton',
     averagePrice: 423,
     volatilityIndex: 'Medium'
-  }
+  },
+  lastUpdate: new Date().toLocaleString(),
+  description: 'Market trends show strong performance in rice and cotton, with moderate volatility. Wheat and soybeans maintain steady growth while corn shows slight decline.'
 };
 
-const MOCK_SOIL_TRENDS = {
+export const MOCK_SOIL_TRENDS = {
   metrics: {
     ph: 6.5,
     nitrogen: 50,
     phosphorus: 50,
     potassium: 50,
     qualityIndex: 20
-  }
+  },
+  lastUpdate: new Date().toLocaleString(),
+  description: 'Soil analysis indicates balanced pH levels with moderate nutrient content. Nitrogen, phosphorus, and potassium levels are at recommended ranges, though there\'s room for improvement in overall soil quality.'
 };
 
-const MOCK_WEATHER_TRENDS = {
+export const MOCK_WEATHER_TRENDS = {
   current: {
     temperature: 25,
     humidity: 60,
     windspeed: 10
-  }
+  },
+  lastUpdate: new Date().toLocaleString(),
+  description: 'Current weather conditions are favorable for most crops. Moderate temperature and humidity levels provide good growing conditions, while wind speeds remain at safe levels for plant development.'
 };
 
 /**
