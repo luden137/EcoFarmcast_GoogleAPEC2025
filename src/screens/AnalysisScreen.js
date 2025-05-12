@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { 
   Text, 
   Button, 
@@ -18,10 +18,14 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRouter } from 'expo-router';
-
+import useAuth from '../hooks/useAuth';
+import { getFarmBasicInfo } from '../services/farmDataService';
+import { getCropRecommendations } from '../services/analysisService';
+import { USE_DEV_MODE } from '../config/devConfig';
 import AIChatSystem from '../components/ai-chat/AIChatSystem';
 import AnimatedAIButton from '../components/ai-chat/AnimatedAIButton';
 
+// Mock data for development
 const MOCK_RECOMMENDATIONS = {
   crops: {
     primaryCrop: 'Wheat',
@@ -36,29 +40,75 @@ const MOCK_RECOMMENDATIONS = {
 const AnalysisScreen = () => {
   const router = useRouter();
   const theme = useTheme();
+  const { currentUser } = useAuth();
   const [analysisType, setAnalysisType] = useState('crops');
   const [showChat, setShowChat] = useState(false);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const [reportGenerated, setReportGenerated] = useState(false);
+  const [loading, setLoading] = useState(!USE_DEV_MODE);
+  const [error, setError] = useState(null);
   const [analysisState, setAnalysisState] = useState({
-    crops: { result: MOCK_RECOMMENDATIONS.crops, hasUpdate: false },
-    carbon: { result: null, hasUpdate: false },
-    energy: { result: null, hasUpdate: false }
+    crops: { result: USE_DEV_MODE ? MOCK_RECOMMENDATIONS.crops : null, hasUpdate: false, loading: false },
+    carbon: { result: null, hasUpdate: false, loading: false }
   });
 
+  // Load farm data and get recommendations when component mounts or analysis type changes
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setAnalysisState(prev => ({
-        ...prev,
-        [analysisType]: {
-          result: analysisType === 'crops' ? MOCK_RECOMMENDATIONS.crops : { status: 'completed' },
-          hasUpdate: true
-        }
-      }));
-    }, 2000);
+    if (USE_DEV_MODE) {
+      return;
+    }
 
-    return () => clearTimeout(timer);
-  }, [analysisType]);
+    const loadAnalysisData = async () => {
+      if (!currentUser) {
+        setError('Please log in to view analysis');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Get the first farm for now (we can add farm selection later)
+        const farms = await getFarmBasicInfo(currentUser.uid);
+        if (!farms || farms.length === 0) {
+          setError('No farm data found. Please add farm information first.');
+          setLoading(false);
+          return;
+        }
+
+        const farm = farms[0];
+        if (!farm.location?.coordinates?.latitude || !farm.location?.coordinates?.longitude) {
+          setError('Farm location data is incomplete. Please update farm information.');
+          setLoading(false);
+          return;
+        }
+
+        // Get recommendations based on farm data
+        const recommendations = await getCropRecommendations({
+          latitude: farm.location.coordinates.latitude,
+          longitude: farm.location.coordinates.longitude,
+          country: farm.location.country
+        });
+
+        setAnalysisState(prev => ({
+          ...prev,
+          [analysisType]: {
+            result: recommendations,
+            hasUpdate: true,
+            loading: false
+          }
+        }));
+      } catch (error) {
+        console.error('Error loading analysis data:', error);
+        setError('Failed to load analysis data. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAnalysisData();
+  }, [currentUser, analysisType]);
 
   // Cleanup report when leaving the page
   useEffect(() => {
@@ -84,14 +134,39 @@ const AnalysisScreen = () => {
 
   const analysisTypes = [
     { value: 'crops', label: 'Crops' },
-    { value: 'carbon', label: 'Carbon' },
-    { value: 'energy', label: 'Energy' },
+    { value: 'carbon', label: 'Carbon' }
   ];
 
   const renderAnalysisContent = () => {
+    if (loading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+          <Text style={styles.loadingText}>Loading analysis data...</Text>
+        </View>
+      );
+    }
+
+    if (error) {
+      return (
+        <View style={styles.errorContainer}>
+          <Icon name="alert-circle-outline" size={48} color={theme.colors.error} />
+          <Text style={styles.errorText}>{error}</Text>
+          <Button 
+            mode="contained" 
+            onPress={() => router.push('/data_entry')}
+            style={styles.errorButton}
+          >
+            Add Farm Data
+          </Button>
+        </View>
+      );
+    }
+
     switch (analysisType) {
       case 'crops':
-        const cropData = MOCK_RECOMMENDATIONS.crops;
+        const cropData = analysisState.crops.result;
+        if (!cropData) return null;
         return (
           <Card style={styles.card}>
             <Card.Content>
@@ -241,6 +316,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+  },
+  loadingContainer: {
+    padding: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    opacity: 0.7,
+  },
+  errorContainer: {
+    padding: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  errorText: {
+    marginTop: 16,
+    marginBottom: 24,
+    fontSize: 16,
+    textAlign: 'center',
+    opacity: 0.7,
+  },
+  errorButton: {
+    minWidth: 200,
   },
   scrollView: {
     padding: 16,

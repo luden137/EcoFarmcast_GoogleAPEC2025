@@ -79,7 +79,7 @@ export const HomeScreen = ({ navigation }) => {
       description: 'Monitor agricultural trends and market conditions affecting your farm.',
       icon: 'trending-up',
       buttonText: 'View Trends',
-      onPress: () => router.replace("/analysis")
+      onPress: () => router.replace("/trends")
     }
   ];
 
