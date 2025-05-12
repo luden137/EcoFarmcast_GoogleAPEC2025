@@ -1,9 +1,11 @@
 export const geminiConfig = {
   // API Configuration
   api: {
-    defaultModel: "gemini-pro",
+    defaultModel: "models/gemini-2.0-flash-001",
     maxTokens: 1024,
-    defaultTemperature: 0.7
+    defaultTemperature: 0.7,
+    baseUrl: "https://generativelanguage.googleapis.com/v1beta/models" // Add this line
+
   },
 
   // Page-specific Configurations
