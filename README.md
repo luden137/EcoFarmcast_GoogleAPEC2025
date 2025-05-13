@@ -9,7 +9,7 @@ This is an [Expo](https://expo.dev) project for the EcoFarmCast application, a p
    ```bash
    npm install
    ```
-
+!!! authentication function not implemented yet!!!
 2. Start the app
 
    ```bash
