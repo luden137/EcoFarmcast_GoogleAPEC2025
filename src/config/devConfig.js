@@ -7,7 +7,7 @@
 
 // DEVELOPMENT MODE SETTINGS
 // Set this to true to use mock data and bypass real API calls
-export const USE_DEV_MODE = true;
+export const USE_DEV_MODE = false;
 
 // Mock user for authentication testing
 export const MOCK_USER = {

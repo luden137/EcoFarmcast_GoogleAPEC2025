@@ -1,7 +1,7 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
-# dependencies
-node_modules/
+# # dependencies
+# node_modules/
 
 # Expo
 .expo/
@@ -102,3 +102,41 @@ build/
 .gradle/caches/
 .gradle/daemon/
 .gradle/wrapper/
+
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.env
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# ML specific
+*.pkl
+*.csv
