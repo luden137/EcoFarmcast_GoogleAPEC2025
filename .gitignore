@@ -1,142 +1,142 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+# # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
-# # dependencies
+# # # dependencies
+# # node_modules/
+
+# # Expo
+# .expo/
+# dist/
+# web-build/
+# expo-env.d.ts
+
+# # Native
+# .kotlin/
+# *.orig.*
+# *.jks
+# *.p8
+# *.p12
+# *.key
+# *.mobileprovision
+
+# # Metro
+# .metro-health-check*
+
+# # debug
+# npm-debug.*
+# yarn-debug.*
+# yarn-error.*
+
+# # macOS
+# .DS_Store
+# *.pem
+
+# # local env files
+# .env*.local
+
+# # typescript
+# *.tsbuildinfo
+
+# app-example
+
+# # Learn more: https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# # ===== Dependencies =====
 # node_modules/
 
-# Expo
-.expo/
-dist/
-web-build/
-expo-env.d.ts
+# # ===== Build Output =====
+# # If the project uses webpack, Rollup, Parcel or other build tools, update according to actual output directory
+# dist/
+# build/
+# web-build/
 
-# Native
-.kotlin/
-*.orig.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
+# # ===== Expo (can be kept or removed if only used for Web projects) =====
+# .expo/
+# expo-env.d.ts
 
-# Metro
-.metro-health-check*
+# # ===== Debug Logs =====
+# npm-debug.log*
+# yarn-debug.log*
+# yarn-error.log*
 
-# debug
-npm-debug.*
-yarn-debug.*
-yarn-error.*
+# # ===== Environment Variable Files =====
 
-# macOS
-.DS_Store
-*.pem
+# .env.local
+# .env.*.local
 
-# local env files
-.env*.local
+# # ===== TypeScript Related =====
+# *.tsbuildinfo
 
-# typescript
-*.tsbuildinfo
+# # ===== Common Platform Generated Files =====
+# # macOS files
+# .DS_Store
 
-app-example
+# # ===== Override or Additional Ignore Items =====
+# # Override example directory, do not include in version control
+# app-example
 
-# Learn more: https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+# # ===== Optional: Cache Files (add according to project needs) =====
+# .cache/
+# coverage/
 
-# ===== Dependencies =====
-node_modules/
+# # ===== IDE relative =====
+# .idea/
+# .vscode/
 
-# ===== Build Output =====
-# If the project uses webpack, Rollup, Parcel or other build tools, update according to actual output directory
-dist/
-build/
-web-build/
+# # ===== Android specific files =====
+# android/app/build/
+# android/build/
+# android/.gradle/
+# android/local.properties
+# android/captures/
+# android/gradlew
+# android/gradlew.bat
+# android/gradle/
+# *.hprof
+# *.iml
 
-# ===== Expo (can be kept or removed if only used for Web projects) =====
-.expo/
-expo-env.d.ts
-
-# ===== Debug Logs =====
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# ===== Environment Variable Files =====
-
-.env.local
-.env.*.local
-
-# ===== TypeScript Related =====
-*.tsbuildinfo
-
-# ===== Common Platform Generated Files =====
-# macOS files
-.DS_Store
-
-# ===== Override or Additional Ignore Items =====
-# Override example directory, do not include in version control
-app-example
-
-# ===== Optional: Cache Files (add according to project needs) =====
-.cache/
-coverage/
-
-# ===== IDE relative =====
-.idea/
-.vscode/
-
-# ===== Android specific files =====
-android/app/build/
-android/build/
-android/.gradle/
-android/local.properties
-android/captures/
-android/gradlew
-android/gradlew.bat
-android/gradle/
-*.hprof
-*.iml
-
-# Gradle
-.gradle/
-build/
-**/build/
-!gradle-wrapper.jar
-.gradle/caches/
-.gradle/daemon/
-.gradle/wrapper/
+# # Gradle
+# .gradle/
+# build/
+# **/build/
+# !gradle-wrapper.jar
+# .gradle/caches/
+# .gradle/daemon/
+# .gradle/wrapper/
 
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-venv/
-env/
-.env
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+# # Python
+# __pycache__/
+# *.py[cod]
+# *$py.class
+# *.so
+# .Python
+# venv/
+# env/
+# .env
+# build/
+# develop-eggs/
+# dist/
+# downloads/
+# eggs/
+# .eggs/
+# lib/
+# lib64/
+# parts/
+# sdist/
+# var/
+# wheels/
+# *.egg-info/
+# .installed.cfg
+# *.egg
 
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
+# # Testing
+# .pytest_cache/
+# .coverage
+# htmlcov/
 
-# Jupyter Notebook
-.ipynb_checkpoints
+# # Jupyter Notebook
+# .ipynb_checkpoints
 
-# ML specific
-*.pkl
-*.csv
+# # ML specific
+# *.pkl
+# *.csv
